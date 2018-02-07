@@ -4,7 +4,7 @@ defmodule TokenAuthTest do
   use Plug.Test
 
   defmodule User do
-    def find_by_token(_conn, token) do
+    def find_by_token(token) do
       if token == "token" do
         %{id: 1}
       else
@@ -18,7 +18,7 @@ defmodule TokenAuthTest do
   describe "when token is not present" do
     test "it should set nil as current user" do
       conn = conn(:get, "/")
-      conn = HeaderTokenAuth.TokenAuth.call(conn, finder: &User.find_by_token/2)
+      conn = HeaderTokenAuth.TokenAuth.call(conn, finder: &User.find_by_token/1)
 
       assert conn.status != 401
       assert conn.halted() == false
@@ -29,7 +29,7 @@ defmodule TokenAuthTest do
   describe "when token is present and correct" do
     test "it should set correct current_user" do
       conn = conn(:get, "/") |> Plug.Conn.put_req_header("authorization", "Token token")
-      conn = HeaderTokenAuth.TokenAuth.call(conn, finder: &User.find_by_token/2)
+      conn = HeaderTokenAuth.TokenAuth.call(conn, finder: &User.find_by_token/1)
 
       assert conn.status != 401
       assert conn.halted() == false
@@ -40,7 +40,7 @@ defmodule TokenAuthTest do
   describe "when token is present but incorrect" do
     test "it should set return value as current_user" do
       conn = conn(:get, "/") |> Plug.Conn.put_req_header("authorization", "Token incorrect")
-      conn = HeaderTokenAuth.TokenAuth.call(conn, finder: &User.find_by_token/2)
+      conn = HeaderTokenAuth.TokenAuth.call(conn, finder: &User.find_by_token/1)
 
       assert conn.status != 401
       assert conn.halted() == false

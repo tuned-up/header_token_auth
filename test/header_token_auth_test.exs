@@ -3,7 +3,7 @@ defmodule HeaderTokenAuthTest do
   use Plug.Test
 
   defmodule User do
-    def find_by_token(_conn, token) do
+    def find_by_token(token) do
       if token == "token" do
         %{id: 1}
       else
@@ -11,7 +11,7 @@ defmodule HeaderTokenAuthTest do
       end
     end
 
-    def no_nil_return(_conn, _token) do
+    def no_nil_return(_token) do
       "not nil"
     end
   end
@@ -27,7 +27,7 @@ defmodule HeaderTokenAuthTest do
 
   describe "when token is not present" do
     test "it should render unathorized" do
-      conn = conn(:get, "/") |> HeaderTokenAuth.call(finder: &User.find_by_token/2)
+      conn = conn(:get, "/") |> HeaderTokenAuth.call(finder: &User.find_by_token/1)
 
       assert conn.status == 401
       assert conn.halted() == true
@@ -38,7 +38,7 @@ defmodule HeaderTokenAuthTest do
   describe "when token is present and correct" do
     test "it should set correct current_user" do
       conn = conn(:get, "/") |> Plug.Conn.put_req_header("authorization", "Token token")
-      conn = HeaderTokenAuth.call(conn, finder: &User.find_by_token/2)
+      conn = HeaderTokenAuth.call(conn, finder: &User.find_by_token/1)
 
       assert conn.status != 401
       assert conn.halted() == false
@@ -49,7 +49,7 @@ defmodule HeaderTokenAuthTest do
   describe "when token is present but incorrect" do
     test "it should halt on falsey values" do
       conn = conn(:get, "/") |> Plug.Conn.put_req_header("authorization", "Token incorrect")
-      conn = HeaderTokenAuth.call(conn, finder: &User.find_by_token/2)
+      conn = HeaderTokenAuth.call(conn, finder: &User.find_by_token/1)
 
       assert conn.status == 401
       assert conn.halted() == true
@@ -58,7 +58,7 @@ defmodule HeaderTokenAuthTest do
 
     test "it should not halt on truthy values" do
       conn = conn(:get, "/") |> Plug.Conn.put_req_header("authorization", "Token incorrect")
-      conn = HeaderTokenAuth.call(conn, finder: &User.no_nil_return/2)
+      conn = HeaderTokenAuth.call(conn, finder: &User.no_nil_return/1)
 
       assert conn.status != 401
       assert conn.halted() == false

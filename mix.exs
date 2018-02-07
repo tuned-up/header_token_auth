@@ -1,8 +1,8 @@
-defmodule TokenAuth.Mixfile do
+defmodule HeaderTokenAuth.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :token_auth,
+    [app: :header_token_auth,
      description: "Plug for simple token authentication",
      package: package(),
      version: "1.0.0",
@@ -35,7 +35,7 @@ defmodule TokenAuth.Mixfile do
       contributors: ["Nick Grysimov"],
       maintainers: ["Nick Grysimov"],
       licenses: ["MIT"],
-      links: %{},
+      links: %{github: "https://github.com/tuned-up/header_token_auth"},
       files: ~w(lib LICENSE.md mix.exs README.md),
     ]
   end
