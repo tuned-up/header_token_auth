@@ -1,6 +1,6 @@
 # Header Token Auth
-  [![Hex.pm](https://img.shields.io/hexpm/v/plug.svg?style=flat-square)](https://hex.pm/packages/token_auth)
-
+  [![Hex.pm](https://img.shields.io/hexpm/v/plug.svg?style=flat-square)](https://hex.pm/packages/header_token_auth)
+  [![Travis](https://img.shields.io/travis/rust-lang/rust.svg?style=flat-square)](https://travis-ci.org/tuned-up/header_token_auth)
 
 
   Dead simple token auth for phoenix\other plug-based frameworks.
